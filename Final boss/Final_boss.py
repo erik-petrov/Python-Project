@@ -8,7 +8,7 @@ import requests
 import json
 import random
 import webbrowser
-from PIL import ImageTk, Image
+import ast
 #https://
 
 def short():
@@ -49,15 +49,42 @@ def champInfo():
   except:
     cLabel.insert(0.0,"Неверно введенные данные")
 
-def open_():
-  global filef
-  filef = askopenfilename()
-  print(filef)
-  photo = ImageTK.PhotoImage(Image.open(filef))
-  pilC.create_image(50,10,anchor=NW,image=photo)
+def covid():
+    url = "https://covid-19-data.p.rapidapi.com/country"
 
-def rot():
-  pass
+    querystring = {"name":country.get()}
+
+    headers = {
+        'x-rapidapi-key': "63bea75195msh836b9bb25a96cb1p124492jsn9b3f1b950c66",
+        'x-rapidapi-host': "covid-19-data.p.rapidapi.com"
+        }
+
+    response = requests.request("GET", url, headers=headers, params=querystring)
+    try:
+        r=response.json()
+        info.config(font=('Helvetica','28'),text=
+        f"В стране {r[0]['country']}:\nЗаражено: {r[0]['confirmed']}\nВ критическом состоянии: {r[0]['critical']}\nУмерло: {r[0]['deaths']}")
+    except:
+        info.config(text='Неверно введенная страна.')
+    
+def weather():
+    url = "https://weatherapi-com.p.rapidapi.com/current.json"
+
+    querystring = {"q":position.get()}
+
+    headers = {
+        'x-rapidapi-key': "63bea75195msh836b9bb25a96cb1p124492jsn9b3f1b950c66",
+        'x-rapidapi-host': "weatherapi-com.p.rapidapi.com"
+        }
+
+    response = requests.request("GET", url, headers=headers, params=querystring)
+    r = ast.literal_eval(response.text)
+
+    weatInfo.config(font=('Helvetica','28'),text=
+        f'''Сейчас в {r["location"]["name"]}:
+{r["current"]["condition"]["text"]}
+Температура: {r["current"]["temp_c"]}C
+Скорость ветра {r["current"]["wind_mph"]}м/c''')
 
 main = Tk()
 main.geometry("600x600")
@@ -71,7 +98,7 @@ tabs3 = Frame(tabs)
 tabs4 = Frame(tabs)
 tabs.add(tabs1,text="Link short")
 tabs.add(tabs2,text="League info")
-tabs.add(tabs3,text="PIL")
+tabs.add(tabs3,text="COVID-19")
 tabs.add(tabs4,text="Weather")
 tabs.pack()
 #--------------укротитель ссылок-------------
@@ -79,7 +106,7 @@ shortw = Canvas(tabs1,width=600,height=600)
 shortw.pack(expand=YES, fill=BOTH)
 ent = Entry(tabs1)
 shortw.create_window(300,300,window=ent)
-but = Button(tabs1,command=short,text="Сократить ссылку")
+but = Button(tabs1,command=short,text="Сократить ссылку.")
 shortw.create_window(300,340,window=but)
 label = Label(tabs1)
 shortw.create_window(300,200,window=label)
@@ -92,13 +119,24 @@ butt = Button(tabs2,text="Получить информацию о чемпио�
 leagueW.create_window(300,560,window=butt)
 cLabel = Text(tabs2,width=60,height=30)
 leagueW.create_window(300,250,window=cLabel)
-#-------------------PIL---------------------
-pilC = Canvas(tabs3,width=600,height=600)
-pilC.pack(expand=YES, fill=BOTH)
-rotB = Button(tabs3,text="Повернуть",command=rot)
-pilC.create_window(300,560,window=rotB)
-openB = Button(tabs3,text="Открыть фото.",command=open_)
-pilC.create_window(300,540,window=openB)
-
+#-------------------COVID---------------------
+covC = Canvas(tabs3,width=600,height=600)
+covC.pack()
+country = Entry(tabs3)
+covC.create_window(300,500,window=country)
+covB = Button(tabs3,text="Получить информацию.",command=covid)
+covC.create_window(300,530,window=covB)
+info = Label(tabs3)
+covC.create_window(300,200,window=info)
+#----------------WEATHER---------------------
+weatC = Canvas(tabs4,width=600,height=600)
+weatC.pack()
+position = Entry(tabs4)
+weatC.create_window(300,500,window=position)
+weatB = Button(tabs4,command=weather,text='Получить текущую погоду.')
+weatC.create_window(300,530,window=weatB)
+weatInfo = Label(tabs4)
+weatC.create_window(300,200,window=weatInfo)
+#TODO: форкаст на х дней, ловитель ошибок и както сунуть файлы
 label.bind("<Button-1>", lambda a: shortOpen(url))
 main.mainloop()
