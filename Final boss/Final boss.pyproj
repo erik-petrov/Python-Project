@@ -23,6 +23,14 @@
   <ItemGroup>
     <Compile Include="Final_boss.py" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="discord-icon-43744.png" />
+    <Content Include="ico1.ico" />
+    <Content Include="ico2.ico" />
+    <Content Include="ico3.ico" />
+    <Content Include="ico4.ico" />
+    <Content Include="ico5.ico" />
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
        Visual Studio and specify your pre- and post-build commands in

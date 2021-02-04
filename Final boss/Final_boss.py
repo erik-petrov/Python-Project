@@ -1,4 +1,3 @@
-#TODO: PIL with file open, WeatherAPI, LOL info, link shortner(can be replaced)
 from tkinter import *
 from tkinter import ttk
 from tkinter.filedialog import *
@@ -108,6 +107,8 @@ tabs.add(tabs2,text="League info")
 tabs.add(tabs3,text="COVID-19")
 tabs.add(tabs4,text="Weather")
 tabs.pack()
+icons=["ico1.ico","ico2.ico","ico3.ico","ico4.ico","ico5.ico"]
+main.iconbitmap(random.choice(icons))
 #--------------укротитель ссылок-------------
 shortw = Canvas(tabs1,width=600,height=600)
 shortw.pack(expand=YES, fill=BOTH)
@@ -150,6 +151,6 @@ option["values"] = ("0","1","2")
 forecastInfo = Label(tabs4,text="Вы можете выбрать, на сколько дней вы хотите прогноз погоды.")
 weatC.create_window(520,530,window=option)
 weatC.create_window(400,565,window=forecastInfo)
-#TODO: форкаст на х дней, ловитель ошибок и както сунуть файлы
+
 label.bind("<Button-1>", lambda a: shortOpen(url))
 main.mainloop()
