@@ -66,25 +66,32 @@ def covid():
         f"В стране {r[0]['country']}:\nЗаражено: {r[0]['confirmed']}\nВ критическом состоянии: {r[0]['critical']}\nУмерло: {r[0]['deaths']}")
     except:
         info.config(text='Неверно введенная страна.')
-    
-def weather():
-    url = "https://weatherapi-com.p.rapidapi.com/current.json"
 
-    querystring = {"q":position.get()}
+def forecast():
+    try:
+      url = "https://weatherapi-com.p.rapidapi.com/forecast.json"
 
-    headers = {
-        'x-rapidapi-key': "63bea75195msh836b9bb25a96cb1p124492jsn9b3f1b950c66",
-        'x-rapidapi-host': "weatherapi-com.p.rapidapi.com"
-        }
+      print(option.get())
 
-    response = requests.request("GET", url, headers=headers, params=querystring)
-    r = ast.literal_eval(response.text)
+      querystring = {"q":position.get(),"days":"3","lang":"ru"}
 
-    weatInfo.config(font=('Helvetica','28'),text=
-        f'''Сейчас в {r["location"]["name"]}:
-{r["current"]["condition"]["text"]}
-Температура: {r["current"]["temp_c"]}C
-Скорость ветра {r["current"]["wind_mph"]}м/c''')
+      headers = {
+          'x-rapidapi-key': "63bea75195msh836b9bb25a96cb1p124492jsn9b3f1b950c66",
+          'x-rapidapi-host': "weatherapi-com.p.rapidapi.com"
+          }
+
+      response = requests.request("GET", url, headers=headers, params=querystring)
+
+      r = ast.literal_eval(response.text)
+      weatInfo.config(font=('Helvetica','26'),text=
+f'''{r["forecast"]["forecastday"][int(option.get())]["date"]} числа
+в {r["location"]["name"]}:
+{r["forecast"]["forecastday"][int(option.get())]["day"]["condition"]["text"]}
+Температура: от {r["forecast"]["forecastday"][int(option.get())]["day"]["mintemp_c"]}C
+до {r["forecast"]["forecastday"][int(option.get())]["day"]["maxtemp_c"]}C
+Скорость ветра {r["forecast"]["forecastday"][int(option.get())]["day"]["maxwind_kph"]}м/c''')
+    except:
+      weatInfo.config(font=('Helvetica','26'),bg="red",text="Ошибка в программе")
 
 main = Tk()
 main.geometry("600x600")
@@ -133,10 +140,16 @@ weatC = Canvas(tabs4,width=600,height=600)
 weatC.pack()
 position = Entry(tabs4)
 weatC.create_window(300,500,window=position)
-weatB = Button(tabs4,command=weather,text='Получить текущую погоду.')
+weatB = Button(tabs4,command=forecast,text='Получить погоду.')
 weatC.create_window(300,530,window=weatB)
 weatInfo = Label(tabs4)
 weatC.create_window(300,200,window=weatInfo)
+chosen = StringVar(tabs4)
+option = ttk.Combobox(tabs4)
+option["values"] = ("0","1","2")
+forecastInfo = Label(tabs4,text="Вы можете выбрать, на сколько дней вы хотите прогноз погоды.")
+weatC.create_window(520,530,window=option)
+weatC.create_window(400,565,window=forecastInfo)
 #TODO: форкаст на х дней, ловитель ошибок и както сунуть файлы
 label.bind("<Button-1>", lambda a: shortOpen(url))
 main.mainloop()
